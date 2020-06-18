@@ -2,64 +2,39 @@
 
 //Контроллер связвает модель с представлением
 namespace app\controllers;
-use yii\web\Controller;
+
 use yii;
-use yii\filters\AccessControl;
-use yii\web\ErrorAction;
+use yii\web\Response;
+use app\models\Answer;
+use app\models\Question;
+use yii\rest\ActiveController;
+use app\models\Articles;
+use yii\data\ActiveDataProvider;
 
-class SiteController extends Controller
+class SiteController extends ActiveController
 {
-    public function actionIndex()
+    public $modelClass = 'app\models\Question';
+    public function actions() //переопределяем функцию actions из класса-родителя
     {
-        return $this->render('index');
+     $actions = parent::actions(); //берем функцию из класса родителя непосредственно
+     unset($actions['index']); //удаляем actionIndex 
+     return $actions; //возвращаем список action
+    } //прим. Когда контроллер не найдет actionIndex внутри функции actions, он пойдет искать ее дальше в сам контроллер. 
 
-    }
-    public function actions()
+    public function actionIndex() //определяем нашу функцию actionIndex
     {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-                'view' => '@app/views/site/myerror.php'
-            ],
-        ];
-    }
-    public function actionError()
-    {
-
-//        if (($exception->statusCode) == 404){
-//            $message="Такой страницы не существует.";
-//        }
-//        else{
-//            $message="У вас не хватает прав доступа.";
-//        }
-        return $this->render('myerror',['message'=>$message]);
+        $questions = Question::find()->all();
+        foreach($questions as $question)
+        {
+            $question->answers = Answer::find()->where("question=$question->id")->all();
+        }
+        return ['questions' => $questions];
     }
 
-//
-//
-//    public function actionError()
-//    {
-//        $exception = \Yii::$app->errorHandler->exception;
-//        $exception_my='Не хватает прав';
-//        if ($exception !== null){
-//            return $this->render('error',['exception'=>$exception]);
-//        }
-//    }
-
-//    public function behaviors() //Разрешение на вход на страницы
-//    {
-//        return [
-//            'access' => [
-//                'class' => AccessControl::className(),
-//                'rules' => [
-//                    [
-//                        'actions' => ['index'],
-//                        'allow' => true,
-//                        'roles' => ['@'],
-//
-//                    ],
-//                ],
-//            ],
-//            ];
-//    }
+    public function behaviors() //вывод JSON по умолчанию
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['contentNegotiator']['formats']['text/html'] = Response::FORMAT_JSON; //переопределение вывода text/html на JSON
+        return $behaviors;
+    }
 }
