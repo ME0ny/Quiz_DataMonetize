@@ -5,17 +5,17 @@ web/db.php
 composer.lock
 uploads
 
-node_modules/**/*
-.expo/*
-npm-debug.*
+App/Quiz/node_modules/**/*
+App/Quiz/.expo/*
+App/Quiz/npm-debug.*
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
 *.orig.*
-web-build/
-web-report/
+App/Quiz/web-build/
+App/Quiz/web-report/
 
 # macOS
 .DS_Store
