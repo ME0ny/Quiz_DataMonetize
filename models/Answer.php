@@ -10,6 +10,18 @@ class Answer extends \yii\db\ActiveRecord
         return 'answer';
     }
 
+    public static function checkExist($id = null)
+    {
+        if (($id == null) or (!($answer = self::find()->where(['id'=>$id])->one())))
+        {
+            return false; //вернуть false если айди не задан или не существует объекта с таким айди
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     public function rules()
     {
         return 

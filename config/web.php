@@ -1,6 +1,7 @@
 <?php
 
   $config=[
+      'defaultRoute' => 'main',
       'id' =>'school',
       'basePath' => realpath(__DIR__.'/../'),
       'bootstrap' =>
