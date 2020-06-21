@@ -30,13 +30,13 @@ class SiteController extends ActiveController
             return -1; //вернуть минус единицу если айди не задан или не существует пользователя с таким айди
         }
         $user = User::find()->where(['id'=>$id])->one();
-        $usedquestions = Used::find()->where(['userid'=>$id])->all();
-        $used = [];
-        foreach($usedquestions as $question)
-        {
-            array_push($used, $question->questionid);
-        }
-        $questions = Question::find()->where(['not',['id'=>$used]])->limit(20-$user->value_answer)->all();
+        // $usedquestions = Used::find()->where(['userid'=>$id])->all();
+        // // $used = [];
+        // foreach($usedquestions as $question)
+        // {
+        //     array_push($used, $question->questionid);
+        // }
+        $questions = Question::find()->limit(20-$user->value_answer)->all();
         if (count($questions) <= 0)
         {
             return -4; // если для человека не найдено вопросов вернуть -4
@@ -65,10 +65,10 @@ class SiteController extends ActiveController
         $ansobj->data_prediction++;
         $question = Question::find()->where(['id'=>$ansobj->question])->one();
         $question->answers_qnt++;
-        $used = new Used();
-        $used->userid = $id;
-        $used->questionid = $question->id;
-        if ($ansobj->save() && $question->save() && $used->save() && $user->save())
+        // $used = new Used();
+        // $used->userid = $id;
+        // $used->questionid = $question->id;
+        if ($ansobj->save() && $question->save() && $user->save())
         {
             return 1;
         }
@@ -108,18 +108,17 @@ class SiteController extends ActiveController
         {
             return -1;
         }
-        
-        $usedquestions = Used::find()->where(['userid'=>$id])->all();
-        $used = [];
-        foreach($usedquestions as $question)
-        {
-            array_push($used, $question->questionid);
-        }
-        $question = Question::find()->where(['not',['id'=>$used]])->one();
-        if ($question == null)
-        {
-            return -4; // если для человека не найдено вопросов вернуть -4
-        }
+        // $usedquestions = Used::find()->where(['userid'=>$id])->all();
+        // // $used = [];
+        // foreach($usedquestions as $question)
+        // {
+        //     array_push($used, $question->questionid);
+        // }
+        $question = Question::find()->one();
+        // if ($question == null)
+        // {
+            // return -4; // если для человека не найдено вопросов вернуть -4
+        // }
         return $question;
         
          
